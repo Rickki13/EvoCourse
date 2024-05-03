@@ -24,7 +24,7 @@ public class Main {
         double part = calculator.calc(a, b);
         System.out.println("Результат умножения a и b: " + part);
 
-        calculator = new Calculator(new Devider());
+        calculator = new Calculator(new Divider());
         double prod = calculator.calc(a, b);
         System.out.println("Результат деления a и b: " + prod);
     }
