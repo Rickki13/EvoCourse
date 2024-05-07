@@ -1,8 +1,15 @@
 package com.example.restdemo.dto;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
 import java.time.LocalTime;
 
+@Entity
 public class Message {
+    @Id
+    @GeneratedValue
     private int id;
     private String title;
     private String text;
@@ -11,8 +18,7 @@ public class Message {
     public Message() {
     }
 
-    public Message(int id, String title, String text, LocalTime time) {
-        this.id = id;
+    public Message(String title, String text, LocalTime time) {
         this.title = title;
         this.text = text;
         this.time = time;
