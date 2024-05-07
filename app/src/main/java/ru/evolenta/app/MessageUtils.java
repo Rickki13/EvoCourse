@@ -1,4 +1,4 @@
-package org.example.app;
+package ru.evolenta.app;
 
 class MessageUtils {
     public static String getMessage() {
