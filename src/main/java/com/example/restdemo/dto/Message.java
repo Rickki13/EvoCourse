@@ -1,27 +1,39 @@
 package com.example.restdemo.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 public class Message {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     private int id;
     private String title;
     private String text;
-    private LocalTime time;
+    private LocalDateTime time;
+    @ManyToOne
+    @JsonIgnore
+    private Person person;
 
     public Message() {
     }
 
-    public Message(String title, String text, LocalTime time) {
+    public Message(String title, String text, LocalDateTime time, Person person) {
         this.title = title;
         this.text = text;
+        this.person = person;
         this.time = time;
+    }
+
+
+    public Message(String title, String text) {
+        this.title = title;
+        this.text = text;
     }
 
     public int getId() {
@@ -48,11 +60,20 @@ public class Message {
         this.text = text;
     }
 
-    public LocalTime getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(LocalTime time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
 }
