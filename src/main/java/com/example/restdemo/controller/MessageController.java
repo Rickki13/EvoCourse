@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,8 +14,8 @@ import java.util.Optional;
 @RestController
 public class MessageController {
     private List<Message> messages = new ArrayList<>(Arrays.asList(
-            new Message(1, "Hello", "Hello, World!", LocalTime.of(00, 00, 00)),
-            new Message(2, "Second", "Second text!", LocalTime.of(20, 31, 00))
+            new Message(1, "Hello", "Hello, World!", LocalDateTime.of(2024, 05, 00, 00, 00)),
+            new Message(2, "Second", "Second text!", LocalDateTime.of(2024, 05, 20, 31, 00))
     ));
 
     @GetMapping("/message")

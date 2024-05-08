@@ -1,17 +1,17 @@
 package com.example.restdemo.dto;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 public class Message {
     private int id;
     private String title;
     private String text;
-    private LocalTime time;
+    private LocalDateTime time;
 
     public Message() {
     }
 
-    public Message(int id, String title, String text, LocalTime time) {
+    public Message(int id, String title, String text, LocalDateTime time) {
         this.id = id;
         this.title = title;
         this.text = text;
@@ -42,11 +42,11 @@ public class Message {
         this.text = text;
     }
 
-    public LocalTime getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(LocalTime time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
 }
