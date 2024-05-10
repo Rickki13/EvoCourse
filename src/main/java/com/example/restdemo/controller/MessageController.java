@@ -14,8 +14,8 @@ import java.util.Optional;
 @RestController
 public class MessageController {
     private List<Message> messages = new ArrayList<>(Arrays.asList(
-            new Message(1, "Hello", "Hello, World!", LocalDateTime.of(2024, 05, 00, 00, 00)),
-            new Message(2, "Second", "Second text!", LocalDateTime.of(2024, 05, 20, 31, 00))
+            new Message(1, "Hello", "Hello, World!", LocalDateTime.of(2024, 05, 01, 00, 00)),
+            new Message(2, "Second", "Second text!", LocalDateTime.of(2024, 05, 20, 21, 00))
     ));
 
     @GetMapping("/message")
