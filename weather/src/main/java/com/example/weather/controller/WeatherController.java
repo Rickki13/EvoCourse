@@ -24,9 +24,9 @@ public class WeatherController {
 
     @GetMapping("/weather")
     @Cacheable(value = "weather", key = "#lat + ',' + #lon")
-    public Root getWeather(@RequestParam String lat, @RequestParam String lon) {
+    public Main getWeather(@RequestParam String lat, @RequestParam String lon) {
         logger.info("Получение данных через API для lat={}, lon={}", lat, lon);
         String request = String.format("%s?lat=%s&lon=%s&units=metric&appid=%s", urlWeather, lat, lon, appId);
-        return restTemplate.getForObject(request, Root.class);
+        return restTemplate.getForObject(request, Root.class).getMain();
     }
 }

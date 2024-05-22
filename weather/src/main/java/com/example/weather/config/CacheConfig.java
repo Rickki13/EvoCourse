@@ -1,6 +1,5 @@
 package com.example.weather.config;
 
-import com.example.weather.controller.WeatherController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;

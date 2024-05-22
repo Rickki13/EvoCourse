@@ -1,48 +1,60 @@
 package com.example.location.controller;
 
 import com.example.location.model.Geodata;
-import com.example.location.model.Location;
+import com.example.location.model.Weather;
 import com.example.location.repository.GeodataRepository;
-import com.example.location.repository.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/location")
 public class LocationController {
+
     @Autowired
     private GeodataRepository repository;
+    private RestTemplate restTemplate = new RestTemplate();
 
     @GetMapping
-    public Optional<Geodata> getLocation(@RequestParam String name) {
-        return repository.findByName(name);
+    public Iterable<Geodata> getAllLocations() {
+        return repository.findAll();
+    }
+
+    @GetMapping("/")
+    public Optional<Geodata> getLocation(@RequestParam("name") String location) {
+        return repository.findByName(location);
     }
 
     @PostMapping
     public Geodata save(@RequestBody Geodata geodata) {
         return repository.save(geodata);
     }
-//    @Autowired
-//    private LocationRepository repository;
-//
-//    @GetMapping
-//    public Iterable<Location> findAll() {
-//        return repository.findAll();
-//    }
-//
-//    @GetMapping("/{id}")
-//    public Optional<Location> findById(@PathVariable int id) {
-//        return repository.findById(id);
-//    }
-//
-//    @PostMapping
-//    public ResponseEntity<Location> save(@RequestBody Location location) {
-//        return repository.findById(location.getId()).isPresent()
-//                ? new ResponseEntity(repository.findById(location.getId()), HttpStatus.BAD_REQUEST)
-//                : new ResponseEntity(repository.save(location), HttpStatus.CREATED);
-//    }
+
+    @PutMapping("/")
+    public Geodata updateLocation(@RequestParam("name") String location, @RequestBody Geodata updatedData) {
+        Geodata geodata = repository.findByName(location).orElseThrow(() -> new RuntimeException("Location not found"));
+        geodata.setName(updatedData.getName());
+        geodata.setLat(updatedData.getLat());
+        geodata.setLon(updatedData.getLon());
+        return repository.save(geodata);
+    }
+
+    @DeleteMapping("/")
+    public void deleteLocation(@RequestParam("name") String location) {
+        Geodata geodata = repository.findByName(location).orElseThrow(() -> new RuntimeException("Location not found"));
+        repository.delete(geodata);
+    }
+
+    @GetMapping("/weather")
+    public Weather redirectRequestWeather(@RequestParam("name") String location) {
+        Geodata geodata = repository.findByName(location).orElseThrow(() -> new RuntimeException("Location not found"));
+        String url = String.format("http://localhost:8082/weather?lat=%s&lon=%s", geodata.getLat(), geodata.getLon());
+        return restTemplate.getForObject(url, Weather.class);
+    }
+
+
+
+
 }
