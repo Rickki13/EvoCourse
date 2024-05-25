@@ -27,6 +27,9 @@ public class WeatherController {
     public Main getWeather(@RequestParam String lat, @RequestParam String lon) {
         logger.info("Получение данных через API для lat={}, lon={}", lat, lon);
         String request = String.format("%s?lat=%s&lon=%s&units=metric&appid=%s", urlWeather, lat, lon, appId);
-        return restTemplate.getForObject(request, Root.class).getMain();
+        logger.info("Request URL: {}", request);
+        Root response = restTemplate.getForObject(request, Root.class);
+        logger.info("API Response: {}", response);
+        return response.getMain();
     }
 }

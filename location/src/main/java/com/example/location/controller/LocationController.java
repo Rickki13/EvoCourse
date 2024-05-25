@@ -4,36 +4,63 @@ import com.example.location.model.Geodata;
 import com.example.location.model.Weather;
 import com.example.location.repository.GeodataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/location")
 public class LocationController {
 
     @Autowired
     private GeodataRepository repository;
-    private RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestTemplate restTemplate;
+    @Value("${weather.url}")
+    String weatherUrl;
 
-    @GetMapping
+    @GetMapping("/weather")
+    public ResponseEntity<Weather> redirectRequestWeather(@RequestParam String location) {
+        Optional<Geodata> optGeodata = repository.findByName(location);
+        if (optGeodata.isPresent()) {
+            Geodata geodata = optGeodata.get();
+            String url = String.format(weatherUrl + "weather?lat=%s&lon=%s", geodata.getLat(), geodata.getLon());
+
+            ResponseEntity<Weather> response = restTemplate.getForEntity(url, Weather.class);
+
+            if (response.getBody() != null) {
+                return response;
+            } else {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/location")
     public Iterable<Geodata> getAllLocations() {
         return repository.findAll();
     }
 
-    @GetMapping("/")
-    public Optional<Geodata> getLocation(@RequestParam("name") String location) {
+    @GetMapping
+    public Optional<Geodata> getLocation(@RequestParam String location) {
         return repository.findByName(location);
     }
 
     @PostMapping
-    public Geodata save(@RequestBody Geodata geodata) {
-        return repository.save(geodata);
+    public ResponseEntity<Geodata> save(@RequestBody Geodata geodata) {
+        return repository.findByName(geodata.getName()).isPresent()
+                ? new ResponseEntity<>(repository.findByName(geodata.getName()).get(), HttpStatus.BAD_REQUEST)
+                : new ResponseEntity<>(repository.save(geodata), HttpStatus.CREATED);
     }
 
     @PutMapping("/")
-    public Geodata updateLocation(@RequestParam("name") String location, @RequestBody Geodata updatedData) {
+    public Geodata updateLocation(@RequestParam String location, @RequestBody Geodata updatedData) {
         Geodata geodata = repository.findByName(location).orElseThrow(() -> new RuntimeException("Location not found"));
         geodata.setName(updatedData.getName());
         geodata.setLat(updatedData.getLat());
@@ -42,19 +69,10 @@ public class LocationController {
     }
 
     @DeleteMapping("/")
-    public void deleteLocation(@RequestParam("name") String location) {
+    public void deleteLocation(@RequestParam String location) {
         Geodata geodata = repository.findByName(location).orElseThrow(() -> new RuntimeException("Location not found"));
         repository.delete(geodata);
     }
-
-    @GetMapping("/weather")
-    public Weather redirectRequestWeather(@RequestParam("name") String location) {
-        Geodata geodata = repository.findByName(location).orElseThrow(() -> new RuntimeException("Location not found"));
-        String url = String.format("http://localhost:8082/weather?lat=%s&lon=%s", geodata.getLat(), geodata.getLon());
-        return restTemplate.getForObject(url, Weather.class);
-    }
-
-
 
 
 }
