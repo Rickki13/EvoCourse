@@ -9,30 +9,29 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
-@RestController
-@RequestMapping("/location")
+@RestController("/location")
 public class LocationController {
 
     @Autowired
     private GeodataRepository repository;
     private RestTemplate restTemplate = new RestTemplate();
 
-    @GetMapping
+    @GetMapping("/location")
     public Iterable<Geodata> getAllLocations() {
         return repository.findAll();
     }
 
-    @GetMapping("/")
+    @GetMapping("/location/")
     public Optional<Geodata> getLocation(@RequestParam("name") String location) {
         return repository.findByName(location);
     }
 
-    @PostMapping
+    @PostMapping("/location")
     public Geodata save(@RequestBody Geodata geodata) {
         return repository.save(geodata);
     }
 
-    @PutMapping("/")
+    @PutMapping("/location/")
     public Geodata updateLocation(@RequestParam("name") String location, @RequestBody Geodata updatedData) {
         Geodata geodata = repository.findByName(location).orElseThrow(() -> new RuntimeException("Location not found"));
         geodata.setName(updatedData.getName());
@@ -41,13 +40,13 @@ public class LocationController {
         return repository.save(geodata);
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping("/location/")
     public void deleteLocation(@RequestParam("name") String location) {
         Geodata geodata = repository.findByName(location).orElseThrow(() -> new RuntimeException("Location not found"));
         repository.delete(geodata);
     }
 
-    @GetMapping("/weather")
+    @GetMapping("/location/weather")
     public Weather redirectRequestWeather(@RequestParam("name") String location) {
         Geodata geodata = repository.findByName(location).orElseThrow(() -> new RuntimeException("Location not found"));
         String url = String.format("http://localhost:8082/weather?lat=%s&lon=%s", geodata.getLat(), geodata.getLon());
