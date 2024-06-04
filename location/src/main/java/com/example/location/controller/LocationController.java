@@ -35,8 +35,8 @@ public class LocationController {
     public Geodata updateLocation(@RequestParam("name") String location, @RequestBody Geodata updatedData) {
         Geodata geodata = repository.findByName(location).orElseThrow(() -> new RuntimeException("Location not found"));
         geodata.setName(updatedData.getName());
-        geodata.setLat(updatedData.getLat());
-        geodata.setLon(updatedData.getLon());
+        geodata.setLatitude(updatedData.getLatitude());
+        geodata.setLongitude(updatedData.getLongitude());
         return repository.save(geodata);
     }
 
@@ -49,7 +49,7 @@ public class LocationController {
     @GetMapping("/location/weather")
     public Weather redirectRequestWeather(@RequestParam("name") String location) {
         Geodata geodata = repository.findByName(location).orElseThrow(() -> new RuntimeException("Location not found"));
-        String url = String.format("http://localhost:8082/weather?lat=%s&lon=%s", geodata.getLat(), geodata.getLon());
+        String url = String.format("http://localhost:8082/weather?lat=%s&lon=%s", geodata.getLatitude(), geodata.getLongitude());
         return restTemplate.getForObject(url, Weather.class);
     }
 

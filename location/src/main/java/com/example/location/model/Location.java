@@ -16,13 +16,13 @@ import lombok.NonNull;
 public class Location {
     @Id @GeneratedValue
     private int id;
-    @NonNull private String locationName;
-    @NonNull private double latitude;
     @NonNull private double longitude;
+    @NonNull private double latitude;
+    @NonNull private String name;
 
-    public Location(@NonNull String locationName, @NonNull double latitude, @NonNull double longitude) {
-        this.locationName = locationName;
-        this.latitude = latitude;
+    public Location(@NonNull double longitude, @NonNull double latitude, @NonNull String name) {
         this.longitude = longitude;
+        this.latitude = latitude;
+        this.name = name;
     }
 }
