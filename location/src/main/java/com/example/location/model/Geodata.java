@@ -16,7 +16,7 @@ import lombok.NonNull;
 public class Geodata {
     @Id @GeneratedValue
     int id;
-    @NonNull private double lon;
-    @NonNull private double lat;
+    @NonNull private double longitude;
+    @NonNull private double latitude;
     @NonNull private String name;
 }
