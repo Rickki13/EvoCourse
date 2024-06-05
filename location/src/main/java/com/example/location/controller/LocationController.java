@@ -6,14 +6,13 @@ import com.example.location.repository.GeodataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
-@RestController
+@RestController("/location")
 public class LocationController {
 
     @Autowired
@@ -23,12 +22,12 @@ public class LocationController {
     @Value("${weather.url}")
     String weatherUrl;
 
-    @GetMapping("/weather")
+    @GetMapping("/location/weather")
     public ResponseEntity<Weather> redirectRequestWeather(@RequestParam String location) {
         Optional<Geodata> optGeodata = repository.findByName(location);
         if (optGeodata.isPresent()) {
             Geodata geodata = optGeodata.get();
-            String url = String.format(weatherUrl + "weather?lat=%s&lon=%s", geodata.getLat(), geodata.getLon());
+            String url = String.format(weatherUrl + "weather?lat=%s&lon=%s", geodata.getLatitude(), geodata.getLongitude());
 
             ResponseEntity<Weather> response = restTemplate.getForEntity(url, Weather.class);
 
@@ -47,28 +46,28 @@ public class LocationController {
         return repository.findAll();
     }
 
-    @GetMapping
+    @GetMapping("/location/")
     public Optional<Geodata> getLocation(@RequestParam String location) {
         return repository.findByName(location);
     }
 
-    @PostMapping
+    @PostMapping("/location")
     public ResponseEntity<Geodata> save(@RequestBody Geodata geodata) {
         return repository.findByName(geodata.getName()).isPresent()
                 ? new ResponseEntity<>(repository.findByName(geodata.getName()).get(), HttpStatus.BAD_REQUEST)
                 : new ResponseEntity<>(repository.save(geodata), HttpStatus.CREATED);
     }
 
-    @PutMapping("/")
+    @PutMapping("/location/")
     public Geodata updateLocation(@RequestParam String location, @RequestBody Geodata updatedData) {
         Geodata geodata = repository.findByName(location).orElseThrow(() -> new RuntimeException("Location not found"));
         geodata.setName(updatedData.getName());
-        geodata.setLat(updatedData.getLat());
-        geodata.setLon(updatedData.getLon());
+        geodata.setLatitude(updatedData.getLatitude());
+        geodata.setLongitude(updatedData.getLongitude());
         return repository.save(geodata);
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping("/location/")
     public void deleteLocation(@RequestParam String location) {
         Geodata geodata = repository.findByName(location).orElseThrow(() -> new RuntimeException("Location not found"));
         repository.delete(geodata);
