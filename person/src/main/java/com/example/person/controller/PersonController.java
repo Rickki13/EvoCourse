@@ -19,7 +19,7 @@ public class PersonController {
     private PersonRepository repository;
     @Autowired
     private RestTemplate restTemplate;
-    private final String url = "http://location-service/location/weather?location=";
+    private final String url = "http://location-service/location/weather?name=";
 
     @GetMapping
     public Iterable<Person> findAll() {

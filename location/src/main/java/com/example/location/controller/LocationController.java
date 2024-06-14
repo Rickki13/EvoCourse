@@ -23,7 +23,7 @@ public class LocationController {
     String weatherUrl;
 
     @GetMapping("/location/weather")
-    public ResponseEntity<Weather> redirectRequestWeather(@RequestParam String location) {
+    public ResponseEntity<Weather> redirectRequestWeather(@RequestParam("name") String location) {
         Optional<Geodata> optGeodata = repository.findByName(location);
         if (optGeodata.isPresent()) {
             Geodata geodata = optGeodata.get();
@@ -40,14 +40,31 @@ public class LocationController {
             return ResponseEntity.notFound().build();
         }
     }
-
+//    @GetMapping("/location/weather")
+//    public ResponseEntity<Weather> redirectRequestWeather(@RequestParam("name") String location) {
+//        Optional<Geodata> optGeodata = repository.findByName(location);
+//        if (optGeodata.isPresent()) {
+//            Geodata geodata = optGeodata.get();
+//            String url = String.format(weatherUrl + "weather?lat=%s&lon=%s", geodata.getLatitude(), geodata.getLongitude());
+//
+//            ResponseEntity<Weather> response = restTemplate.getForEntity(url, Weather.class);
+//
+//            if (response.getBody() != null) {
+//                return response;
+//            } else {
+//                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//            }
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
     @GetMapping("/location")
     public Iterable<Geodata> getAllLocations() {
         return repository.findAll();
     }
 
     @GetMapping("/location/")
-    public Optional<Geodata> getLocation(@RequestParam String location) {
+    public Optional<Geodata> getLocation(@RequestParam("name") String location) {
         return repository.findByName(location);
     }
 
@@ -59,7 +76,7 @@ public class LocationController {
     }
 
     @PutMapping("/location/")
-    public Geodata updateLocation(@RequestParam String location, @RequestBody Geodata updatedData) {
+    public Geodata updateLocation(@RequestParam("name") String location, @RequestBody Geodata updatedData) {
         Geodata geodata = repository.findByName(location).orElseThrow(() -> new RuntimeException("Location not found"));
         geodata.setName(updatedData.getName());
         geodata.setLatitude(updatedData.getLatitude());
@@ -68,7 +85,7 @@ public class LocationController {
     }
 
     @DeleteMapping("/location/")
-    public void deleteLocation(@RequestParam String location) {
+    public void deleteLocation(@RequestParam("name") String location) {
         Geodata geodata = repository.findByName(location).orElseThrow(() -> new RuntimeException("Location not found"));
         repository.delete(geodata);
     }
