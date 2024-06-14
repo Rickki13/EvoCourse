@@ -40,24 +40,7 @@ public class LocationController {
             return ResponseEntity.notFound().build();
         }
     }
-//    @GetMapping("/location/weather")
-//    public ResponseEntity<Weather> redirectRequestWeather(@RequestParam("name") String location) {
-//        Optional<Geodata> optGeodata = repository.findByName(location);
-//        if (optGeodata.isPresent()) {
-//            Geodata geodata = optGeodata.get();
-//            String url = String.format(weatherUrl + "weather?lat=%s&lon=%s", geodata.getLatitude(), geodata.getLongitude());
-//
-//            ResponseEntity<Weather> response = restTemplate.getForEntity(url, Weather.class);
-//
-//            if (response.getBody() != null) {
-//                return response;
-//            } else {
-//                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//            }
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
+
     @GetMapping("/location")
     public Iterable<Geodata> getAllLocations() {
         return repository.findAll();
